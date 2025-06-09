@@ -18,3 +18,6 @@ def get_similarity(pair: SentencePair):
     emb2 = model.encode(pair.sentence2, convert_to_tensor=True)
     similarity = util.cos_sim(emb1, emb2).item()
     return {"similarity_score": round(similarity, 4)}
+@app.get("/")
+def root():
+    return {"message": "API de similitud semántica operativa"}
