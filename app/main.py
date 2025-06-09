@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer, util
 
 app = FastAPI()
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+model = None
 
 class SentencePair(BaseModel):
     sentence1: str
@@ -11,6 +11,9 @@ class SentencePair(BaseModel):
 
 @app.post("/similarity")
 def get_similarity(pair: SentencePair):
+    global model
+    if model is None:
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
     emb1 = model.encode(pair.sentence1, convert_to_tensor=True)
     emb2 = model.encode(pair.sentence2, convert_to_tensor=True)
     similarity = util.cos_sim(emb1, emb2).item()
